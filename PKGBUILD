@@ -1,6 +1,6 @@
 # Maintainer: YuutaW <i@yuuta.moe>
-pkgname=twtfwd
-pkgver=1
+pkgname=twtfwd-git
+pkgver=0.0.0.0
 pkgrel=1
 pkgdesc="Personal Twitter to Telegram bot"
 arch=("any")
@@ -18,6 +18,10 @@ md5sums=('281e2b71474531287f8210060fad1b49'
          '8ee49826056dee908b52339e15e23889'
          '6fcdb0d2461af86190ddbe1ca308bd56')
 backup=('etc/twtfwd.conf')
+
+pkgver() {
+	git rev-list --count master
+}
 
 package() {
     install -m755 -d "${pkgdir}/usr/bin/"
