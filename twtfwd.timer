@@ -1,0 +1,9 @@
+[Unit]
+Description=Twitter Bot
+
+[Timer]
+OnCalendar=*:0/5
+Unit=twtfwd
+ 
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=twtfwd
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/twtfwd
+User=root
+Group=root

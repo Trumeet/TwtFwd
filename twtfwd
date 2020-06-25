@@ -1,0 +1,43 @@
+#!/bin/bash
+TWITTER_MAX=30
+TWITTER_LAST_READ_FILE="/var/lib/twtfwd/last"
+TWITTER_EXCLUDE_REPLIES=true
+TWITTER_INCLUDE_RTS=false
+
+source /etc/twtfwd.conf
+
+set -e
+
+TWEETER_REQUEST+="https://api.twitter.com/" 
+TWEETER_REQUEST+="1.1/"
+TWEETER_REQUEST+="statuses/" 
+TWEETER_REQUEST+="user_timeline.json" 
+TWEETER_REQUEST+="?screen_name=$TWITTER_USER" 
+if [ -f $TWITTER_LAST_READ_FILE ]; then
+	last=$(cat $TWITTER_LAST_READ_FILE)
+	TWEETER_REQUEST+="&since_id=$last"
+fi
+TWEETER_REQUEST+="&count=$TWITTER_MAX"
+TWEETER_REQUEST+="&trim_user=true"
+TWEETER_REQUEST+="&exclude_replies=$TWITTER_EXCLUDE_REPLIES"
+TWEETER_REQUEST+="&include_rts=$TWITTER_INCLUDE_RTS"
+
+RESPONSE=$(curl -s \
+	-H "Authorization: Bearer $TWITTER_TOKEN" \
+	$TWEETER_REQUEST)
+TWEETS=$(echo $RESPONSE | jq -r '.[].id_str' | tac)
+
+for tweet in $TWEETS
+do
+	text="https://twitter.com/$TWITTER_USER/status/$tweet"
+	unset TELEGRAM_REQUEST
+	TELEGRAM_REQUEST+="https://api.telegram.org/"
+	TELEGRAM_REQUEST+="bot$TELEGRAM_TOKEN/"
+	TELEGRAM_REQUEST+="sendMessage"
+	curl -s -G \
+		--data-urlencode "chat_id=$TELEGRAM_CHAT" \
+		--data-urlencode "text=$text" \
+		$TELEGRAM_REQUEST
+
+	echo $tweet > $TWITTER_LAST_READ_FILE
+done
