@@ -19,17 +19,9 @@
 #define TG_TEXT_PART_1 "https://twitter.com/"
 #define TG_TEXT_PART_2 "/status/"
 
-char *core_build_url(FILE *lastread, CMDLine *cmdline)
+char *core_build_url(CMDLine *cmdline, char *lastread_str)
 {
-	// Read last read
-	char lastread_str[1001];
-	char has_lastread = fgets(lastread_str, 1000, lastread) != NULL && lastread_str[0] != '\0';
-	if(has_lastread) 
-	{
-		lastread_str[strcspn(lastread_str, "\r\n")] = 0;
-		has_lastread = lastread_str[0] != '\0';
-	}
-	rewind(lastread);
+	char has_lastread = lastread_str != NULL;
 
 	// Convert bool to string
 	char *exclude_replies = cmdline->twitter_exclude_replies ? "true" : "false";
@@ -128,9 +120,9 @@ end:
 	return r;
 }
 
-int core_run_once(CURL *curl, FILE *lastread, CMDLine *cmdline, char *interrupted)
+int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupted, char **lastread_out)
 {
-	char *url = core_build_url(lastread, cmdline);
+	char *url = core_build_url(cmdline, lastread);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	CURLBody body;
@@ -164,7 +156,7 @@ int core_run_once(CURL *curl, FILE *lastread, CMDLine *cmdline, char *interrupte
 		json_object *current = json_object_array_get_idx(json, i);
 		char *id_str = (char*)json_object_get_string(json_object_object_get(current, "id_str"));
 
-		r = core_send_to_tg(curl, id_str, cmdline);
+		r = 0; //core_send_to_tg(curl, id_str, cmdline);
 		if(r) 
 		{
 			json_object_put(json);
@@ -172,7 +164,9 @@ int core_run_once(CURL *curl, FILE *lastread, CMDLine *cmdline, char *interrupte
 		}
 
 		if(last)
-			fputs(id_str, lastread);
+		{
+			*lastread_out = id_str;
+		}
 	}
 	json_object_put(json);
 

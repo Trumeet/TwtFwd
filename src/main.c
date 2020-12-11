@@ -38,16 +38,36 @@ int main(int argc, char **argv)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);
 
 	signal(SIGINT, handleInt);
+	char lastread_file[1001];
+	char has_lastread = fgets(lastread_file, 1000, lastread) != NULL && lastread_file[0] != '\0';
+	if(has_lastread) 
+	{
+		lastread_file[strcspn(lastread_file, "\r\n")] = 0;
+		has_lastread = lastread_file[0] != '\0';
+	}
+	rewind(lastread);
+	char *lastread_out = NULL;
 	while(!interrupted)
 	{
-		r = core_run_once(curl, lastread, &cmdline, &interrupted);
-		if(r) break;
+		char *lastread_final = NULL;
+		if(lastread_out != NULL) lastread_final = lastread_out;
+		if(has_lastread) lastread_final = lastread_file;
+		r = core_run_once(curl, lastread_final, &cmdline, &interrupted, &lastread_out);
+		if(r) 
+		{
+			lastread_out = NULL;
+			break;
+		}
 		if(cmdline.wait != 0)
 			sleep(cmdline.wait);
 		else 
 			break;
 	}
 
+	if(lastread_out != NULL)
+	{
+		fputs(lastread_out, lastread);
+	}
 	fclose(lastread);
 	curl_easy_cleanup(curl);
 	curl_slist_free_all(headers);
