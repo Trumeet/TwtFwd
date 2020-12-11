@@ -21,6 +21,16 @@ makepkg
 
 to build the package. It will automatically download the source so a whole clone of the repository is not necessary.
 
+*******************
+Building for Docker
+-------------------
+
+To build for Docker, make sure you have Docker, Podman or any Docker compliant programs installed, then run:
+
+docker build -t twtfwd .
+
+and you are ready to go.
+
 ========================================================================
 
 GPL v2 only.
