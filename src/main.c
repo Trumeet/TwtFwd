@@ -17,7 +17,7 @@ CMDLine cmdline;
 void handleInt(int dummy)
 {
 	if(cmdline.verbose)
-		printf("SIGINT received.\n");
+		printf("SIGINT or SIGTERM received.\n");
 	interrupted = 1;
 }
 
@@ -45,8 +45,9 @@ int main(int argc, char **argv)
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);
 
 	signal(SIGINT, handleInt);
+	signal(SIGTERM, handleInt);
 	if(cmdline.verbose)
-		printf("Trap SIGINT.\n");
+		printf("Trap SIGINT and SIGTERM.\n");
 	char lastread_file[1001];
 	char has_lastread = fgets(lastread_file, 1000, lastread) != NULL && lastread_file[0] != '\0';
 	if(has_lastread) 
