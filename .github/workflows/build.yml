@@ -13,6 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: update apt repo
+      run: sudo apt update
     - name: install deps
       run: sudo apt install -y libjson-c-dev libcurl4-openssl-dev
     - name: autogen
