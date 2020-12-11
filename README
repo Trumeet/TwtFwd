@@ -1,0 +1,16 @@
+twtfwd
+
+Forwards your Tweet to your Telegram chat.
+
+********
+Building
+--------
+
+./autogen.sh
+./configure
+make
+make install
+
+========================================================================
+
+GPL v2 only.
