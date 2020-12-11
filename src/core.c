@@ -57,6 +57,8 @@ char *core_build_url(CMDLine *cmdline, char *lastread_str)
 		strcat(url, TWITTER_URL_SINCE);
 		strcat(url, lastread_str);
 	}
+	if(cmdline->verbose)
+		printf("Built Twitter URL: %s.\n", url);
 	return url;
 }
 
@@ -91,6 +93,9 @@ int core_send_to_tg(CURL *curl, char *id, CMDLine *cmdline)
 	strcat(url, TG_URL_PART_3);
 	strcat(url, text_escaped);
 	curl_free(text_escaped);
+
+	if(cmdline->verbose)
+		printf("Built Telegram URL: %s.\n", url);
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 
@@ -155,6 +160,8 @@ int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupte
 		char last = i == 0;
 		json_object *current = json_object_array_get_idx(json, i);
 		char *id_str = (char*)json_object_get_string(json_object_object_get(current, "id_str"));
+		if(cmdline->verbose)
+			printf("Got Tweet ID %s.\n", id_str);
 
 		r = 0; //core_send_to_tg(curl, id_str, cmdline);
 		if(r) 
@@ -165,12 +172,16 @@ int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupte
 
 		if(last)
 		{
+			if(cmdline->verbose)
+				printf("Mark the last ID.\n");
 			*lastread_out = id_str;
 		}
 	}
 	json_object_put(json);
 
 end:
+	if(cmdline->verbose)
+		printf("Exec done. Cleanup.\n");
 	free(url);
 	free(body.ptr);
 	return r;

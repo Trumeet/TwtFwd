@@ -22,6 +22,7 @@ void cmdline_reset(CMDLine *cmdline)
 	cmdline->twitter_include_rts = 0;
 
 	cmdline->wait = 0;
+	cmdline->verbose = 0;
 }
 
 int cmdline_read_env(CMDLine *cmdline)
@@ -44,6 +45,8 @@ int cmdline_read_env(CMDLine *cmdline)
 		int r = cmdline_parse_wait(cmdline, getenv("WAIT"));
 		if(r) return r;
 	}
+	if(getenv("VERBOSE") != NULL)
+		cmdline->verbose = cmdline_parse_bool(getenv("VERBOSE"));
 	return 0;
 }
 
@@ -142,6 +145,11 @@ int cmdline_read_arg(CMDLine *cmdline, int argc, char **argv)
 			cmdline_parse_wait(cmdline, argv[++i]);
 			continue;
 		}
+		if(!strcmp(argv[i], "--verbose"))
+		{
+			cmdline->verbose = 1;
+			continue;
+		}
 		if(!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
 		{
 			printf("Usage: twtfwd [OPTION]...\n");
@@ -156,6 +164,7 @@ int cmdline_read_arg(CMDLine *cmdline, int argc, char **argv)
 			printf("\t--twitter-exclude-replies\twhether to exclude replies. Default is yes.\n");
 			printf("\t--twitter-include-rts\t\twhether to include retweets. Default is no.\n");
 			printf("\t--wait\t\t\t\tthe amount of time to wait between each two poll in seconds. Default is 0, or it exits immediatedly after sending the messages.\n");
+			printf("\t--verbose\t\t\tbe verbose\n");
 			return 64;
 		}
 		fprintf(stderr, "Unknown option %s.\n", argv[i]);

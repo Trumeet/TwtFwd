@@ -14,6 +14,7 @@ typedef struct cmdline
 	int twitter_include_rts;
 
 	unsigned int wait;
+	char verbose;
 } CMDLine;
 
 int cmdline_read(CMDLine *cmdline, int argc, char **argv);
