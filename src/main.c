@@ -6,12 +6,14 @@
 #include <signal.h>
 #include <errno.h>
 
+#include "common.h"
 #include "cmdline.h"
 #include "lastread.h"
 #include "core.h"
 #include "curlutils.h"
 
-char interrupted = 0;
+volatile char interrupted = 0;
+
 CMDLine cmdline;
 
 void handleInt(int dummy)
@@ -73,13 +75,13 @@ int main(int argc, char **argv)
 		if(has_lastread) lastread_final = lastread_file;
 		if(cmdline.verbose)
 			printf("Figured final lastread out: %s.\n", lastread_final);
-		r = core_run_once(curl, lastread_final, &cmdline, &interrupted, &lastread_out);
+		r = core_run_once(curl, lastread_final, &cmdline, &lastread_out);
 		if(r) 
 		{
 			lastread_out = NULL;
 			break;
 		}
-		if(cmdline.wait != 0)
+		if(!interrupted && cmdline.wait != 0)
 		{
 			if(cmdline.verbose)
 				printf("Begin sleep.\n");

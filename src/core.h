@@ -5,6 +5,6 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupted, char **lastread_out);
+int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char **lastread_out);
 
 #endif // CORE_H

@@ -1,5 +1,6 @@
 #include "core.h"
 #include "curlutils.h"
+#include "common.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -125,7 +126,7 @@ end:
 	return r;
 }
 
-int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupted, char **lastread_out)
+int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char **lastread_out)
 {
 	char *url = core_build_url(cmdline, lastread);
 	curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -155,8 +156,14 @@ int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupte
 
 	json_object *json = json_tokener_parse(body.ptr);
 	int count = json_object_array_length(json);
-	for(int i = count - 1; !*interrupted && i >= 0; i --)
+	for(int i = count - 1; i >= 0; i --)
 	{
+		if(interrupted)
+		{
+			if(cmdline->verbose)
+				printf("Core: interrupted.\n");
+			break;
+		}
 		char last = i == 0;
 		json_object *current = json_object_array_get_idx(json, i);
 		char *id_str = (char*)json_object_get_string(json_object_object_get(current, "id_str"));
