@@ -11,16 +11,18 @@
 #include "curlutils.h"
 
 char interrupted = 0;
+CMDLine cmdline;
 
 void handleInt(int dummy)
 {
+	if(cmdline.verbose)
+		printf("SIGINT received.\n");
 	interrupted = 1;
 }
 
 
 int main(int argc, char **argv)
 {
-	CMDLine cmdline;
 	int r = cmdline_read(&cmdline, argc, argv);
 	if(r) return r;
 	
@@ -76,7 +78,13 @@ int main(int argc, char **argv)
 			break;
 		}
 		if(cmdline.wait != 0)
+		{
+			if(cmdline.verbose)
+				printf("Begin sleep.\n");
 			sleep(cmdline.wait);
+			if(cmdline.verbose)
+				printf("End sleep.\n");
+		}
 		else 
 			break;
 	}
