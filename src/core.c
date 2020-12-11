@@ -163,7 +163,7 @@ int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char *interrupte
 		if(cmdline->verbose)
 			printf("Got Tweet ID %s.\n", id_str);
 
-		r = 0; //core_send_to_tg(curl, id_str, cmdline);
+		r = core_send_to_tg(curl, id_str, cmdline);
 		if(r) 
 		{
 			json_object_put(json);
