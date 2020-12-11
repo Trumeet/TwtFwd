@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install deps
-      run: apt install -y libjson-c-dev libcurl-dev
+      run: sudo apt install -y libjson-c-dev libcurl-dev
     - name: autogen
       run: ./autogen.sh
     - name: configure
