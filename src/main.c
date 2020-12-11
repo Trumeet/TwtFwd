@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "cmdline.h"
 #include "lastread.h"
@@ -81,9 +82,10 @@ int main(int argc, char **argv)
 		{
 			if(cmdline.verbose)
 				printf("Begin sleep.\n");
+			errno = 0;
 			sleep(cmdline.wait);
 			if(cmdline.verbose)
-				printf("End sleep.\n");
+				printf("End sleep. %u\n", errno);
 		}
 		else 
 			break;
