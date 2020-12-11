@@ -3,13 +3,23 @@ twtfwd
 Forwards your Tweet to your Telegram chat.
 
 ********
-Building
+Building from source
 --------
 
 ./autogen.sh
 ./configure
 make
 make install
+
+***********************
+Building for Arch Linux
+-----------------------
+
+To build for Arch Linux, download the whole folder of build (other files are unnecessary), then run:
+
+makepkg
+
+to build the package. It will automatically download the source so a whole clone of the repository is not necessary.
 
 ========================================================================
 
