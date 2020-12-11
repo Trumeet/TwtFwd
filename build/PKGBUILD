@@ -1,0 +1,39 @@
+# Maintainer: YuutaW <i@yuuta.moe>
+pkgname=twtfwd-git
+pkgver=1
+pkgrel=1
+pkgdesc="Forward your Tweets to Telegram"
+arch=("any")
+url="https://github.com/Trumeet/twtfwd"
+license=('GPL2')
+depends=("curl"
+		"json-c")
+source=('twtfwd::git+https://github.com/Trumeet/twtfwd.git'
+		'twtfwd.conf'
+		'twtfwd.service')
+md5sums=('SKIP'
+         '3ae669007560fd0ea4590495d2bfea71'
+         '5e02de0cdfb0097fcb82fd20cdeebf76')
+backup=('etc/twtfwd.conf')
+
+pkgver() {
+	git rev-list --count master
+}
+
+build() {
+	cd "$srcdir/${pkgname%-git}"
+	./autogen.sh
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	cd "$srcdir/${pkgname%-git}"
+    install -m755 -d "${pkgdir}/usr/bin/"
+	install -m755 -d "${pkgdir}/usr/lib/systemd/system"
+    install -m755 -d "${pkgdir}/var/lib/twtfwd/"
+    install -m755 -d "${pkgdir}/etc"
+	make DESTDIR="$pkgdir/" install
+	install -m600 "${srcdir}/twtfwd.conf" "${pkgdir}/etc/"
+    install -m644 "${srcdir}/twtfwd.service" "${pkgdir}/usr/lib/systemd/system/"
+}
