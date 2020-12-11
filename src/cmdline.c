@@ -132,7 +132,7 @@ int cmdline_read_arg(CMDLine *cmdline, int argc, char **argv)
 			cmdline->twitter_include_rts = cmdline_parse_bool(argv[++i]);
 			continue;
 		}
-		if(!strcmp(argv[i], "--help"))
+		if(!strcmp(argv[i], "--wait"))
 		{
 			if(last)
 			{
