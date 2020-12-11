@@ -44,6 +44,8 @@ int main(int argc, char **argv)
 		if(r) break;
 		if(cmdline.wait != 0)
 			sleep(cmdline.wait);
+		else 
+			break;
 	}
 
 	fclose(lastread);
