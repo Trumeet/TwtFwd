@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	while(!interrupted)
 	{
 		if(cmdline.verbose)
-			printf("Loop begins. Last time reported lastread is %s.\n", lastread_out);
+			printf("\nLoop begins. Last time reported lastread is %s.\n", lastread_out);
 		char *lastread_final = NULL;
 		if(lastread_out != NULL) lastread_final = lastread_out;
 		else if(has_lastread) lastread_final = lastread_file;
