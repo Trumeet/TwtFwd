@@ -78,7 +78,6 @@ int main(int argc, char **argv)
 		r = core_run_once(curl, lastread_final, &cmdline, &lastread_out);
 		if(r) 
 		{
-			lastread_out = NULL;
 			break;
 		}
 		if(!interrupted && cmdline.wait != 0)

@@ -177,12 +177,9 @@ int core_run_once(CURL *curl, char *lastread, CMDLine *cmdline, char **lastread_
 			goto end;
 		}
 
-		if(last)
-		{
-			if(cmdline->verbose)
-				printf("Mark the last ID.\n");
-			*lastread_out = id_str;
-		}
+		if(cmdline->verbose)
+			printf("Mark the last ID.\n");
+		*lastread_out = id_str;
 	}
 	json_object_put(json);
 
