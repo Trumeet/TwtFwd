@@ -78,6 +78,8 @@ int main(int argc, char **argv)
 		r = core_run_once(curl, lastread_final, &cmdline, &lastread_out);
 		if(r) 
 		{
+			if(cmdline.verbose)
+				printf("Error: %u\n", r);
 			break;
 		}
 		if(!interrupted && cmdline.wait != 0)
@@ -96,7 +98,7 @@ int main(int argc, char **argv)
 	if(lastread_out != NULL)
 	{
 		if(cmdline.verbose)
-			printf("Writing lastread to file: %s.\n", lastread_out);
+			printf("Writing lastread to file: %s (Previous read: %s).\n", lastread_out, lastread_file);
 		fputs(lastread_out, lastread);
 	}
 	else
